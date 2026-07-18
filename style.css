@@ -973,40 +973,6 @@ header {
     border-color: var(--secondary);
 }
 
-.local-api-warning {
-    margin-bottom: 12px;
-    padding: 12px 14px;
-    border: 1px solid rgba(245, 158, 11, 0.45);
-    border-radius: 10px;
-    background: rgba(245, 158, 11, 0.09);
-    color: #fcd34d;
-    font-size: 0.8rem;
-    font-weight: 650;
-    line-height: 1.55;
-}
-
-.settings-help {
-    margin-bottom: 18px;
-    color: var(--text-muted);
-    font-size: 0.76rem;
-    line-height: 1.6;
-}
-
-.ai-generation-status {
-    min-height: 18px;
-    color: var(--text-muted);
-    font-size: 0.7rem;
-    line-height: 1.45;
-}
-
-.ai-generation-status.error {
-    color: var(--danger);
-}
-
-.ai-generation-status.success {
-    color: var(--success);
-}
-
 /* Interactive Checklist */
 .checklist-container {
     display: flex;

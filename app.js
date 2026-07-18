@@ -15,12 +15,6 @@ const DEFAULT_PROFILE = {
     descCta: "도움이 되셨다면 구독과 좋아요로 함께 길을 걸어가 주시기 바랍니다.",
     // {{title}} = 대본 제목, {{content}} = 선택한 섹션 본문 발췌
     promptTemplate: "/imagine prompt: cinematic dramatic lighting, epic atmospheric visualization inspired by \"{{title}}\". Scene: {{content}}, highly detailed, moody cinematic, 8k resolution, unreal engine 5 render --ar 16:9 --style raw --v 6.0",
-    imageModel: "gpt-image-2",
-    ttsProvider: "openai",
-    ttsModel: "gpt-4o-mini-tts",
-    ttsVoice: "coral",
-    ttsInstructions: "차분하고 신뢰감 있는 성우 톤으로 자연스럽게 말해 주세요.",
-    elevenLabsVoiceId: "",
     defaultScriptTemplateId: "longform",
     scriptTemplates: [
         {
@@ -55,38 +49,6 @@ const DEFAULT_PROFILE = {
         }
     ]
 };
-
-const API_KEYS_STORAGE_KEY = "yph_api_keys";
-
-function getRuntimeMode() {
-    const host = window.location.hostname;
-    return host === "localhost" || host === "127.0.0.1"
-        ? "local-test"
-        : "public";
-}
-
-function loadApiKeys() {
-    if (getRuntimeMode() === "public") {
-        return { openai: "", elevenLabs: "" };
-    }
-    try {
-        const stored = JSON.parse(localStorage.getItem(API_KEYS_STORAGE_KEY) || "{}");
-        return {
-            openai: typeof stored.openai === "string" ? stored.openai : "",
-            elevenLabs: typeof stored.elevenLabs === "string" ? stored.elevenLabs : ""
-        };
-    } catch (error) {
-        console.warn("API key settings could not be parsed.", error);
-        return { openai: "", elevenLabs: "" };
-    }
-}
-
-function saveApiKeys(keys) {
-    localStorage.setItem(API_KEYS_STORAGE_KEY, JSON.stringify({
-        openai: (keys.openai || "").trim(),
-        elevenLabs: (keys.elevenLabs || "").trim()
-    }));
-}
 
 // Global State
 let state = {
@@ -154,58 +116,12 @@ const SAMPLE_DATA = {
     profile: JSON.parse(JSON.stringify(DEFAULT_PROFILE))
 };
 
-function checkAndInitRuntimeMode() {
-    if (getRuntimeMode() === "public") {
-        if (localStorage.getItem(API_KEYS_STORAGE_KEY)) {
-            localStorage.removeItem(API_KEYS_STORAGE_KEY);
-        }
-    }
-}
-
-function applyRuntimeModeUI() {
-    const mode = getRuntimeMode();
-    const openaiInput = document.getElementById("set-openai-api-key");
-    const elevenlabsInput = document.getElementById("set-elevenlabs-api-key");
-    const warningBanner = document.querySelector(".local-api-warning");
-    const settingsHelp = document.querySelector(".settings-help");
-
-    if (mode === "public") {
-        if (openaiInput) {
-            openaiInput.disabled = true;
-            openaiInput.type = "text";
-            openaiInput.value = "[공개 배포 모드 - 브라우저 직접 호출 차단됨]";
-            openaiInput.placeholder = "공개 배포 모드에서는 사용할 수 없습니다.";
-        }
-        if (elevenlabsInput) {
-            elevenlabsInput.disabled = true;
-            elevenlabsInput.type = "text";
-            elevenlabsInput.value = "[공개 배포 모드 - 브라우저 직접 호출 차단됨]";
-            elevenlabsInput.placeholder = "공개 배포 모드에서는 사용할 수 없습니다.";
-        }
-        if (warningBanner) {
-            warningBanner.innerText = "ℹ️ 공개 배포 모드 — 브라우저 직접 API 호출이 비활성화되어 있습니다. 실제 AI 기능을 사용하려면 서버리스 프록시를 연결해야 합니다.";
-            warningBanner.style.background = "rgba(6, 182, 212, 0.1)";
-            warningBanner.style.borderColor = "var(--secondary)";
-            warningBanner.style.color = "var(--text-main)";
-        }
-        if (settingsHelp) {
-            settingsHelp.innerText = "공개 배포 모드에서는 브라우저의 OpenAI 직접 호출이 차단됩니다. 이미지 및 TTS 생성을 사용하려면 서버리스 프록시가 필요합니다.";
-        }
-    } else {
-        if (warningBanner) {
-            warningBanner.innerText = "⚠️ 로컬 테스트 모드 — API 키가 브라우저에 저장됩니다. 이 사이트를 공개 배포하면 키가 노출될 수 있습니다.";
-        }
-    }
-}
-
 // Initialize App
 document.addEventListener("DOMContentLoaded", () => {
-    checkAndInitRuntimeMode();
     const isFirstRun = loadData();
     switchView('dashboard');
     setupFormListeners();
     if (isFirstRun) openOnboardingModal();
-    applyRuntimeModeUI();
 });
 
 // Load Data from LocalStorage
@@ -1343,7 +1259,6 @@ function copyDescription() {
    ========================================================================== */
 function renderSettings() {
     const p = state.profile;
-    const apiKeys = loadApiKeys();
     document.getElementById("set-channel-name").value = p.channelName || "";
     document.getElementById("set-speech-rate").value = p.speechRate || 300;
     document.getElementById("set-brand-keywords").value = (p.brandKeywords || []).join(", ");
@@ -1351,20 +1266,6 @@ function renderSettings() {
     document.getElementById("set-desc-template").value = p.descTemplate || "";
     document.getElementById("set-desc-cta").value = p.descCta || "";
     document.getElementById("set-prompt-template").value = p.promptTemplate || "";
-    if (getRuntimeMode() === "public") {
-        document.getElementById("set-openai-api-key").value = "[공개 배포 모드 - 브라우저 직접 호출 차단됨]";
-        document.getElementById("set-elevenlabs-api-key").value = "[공개 배포 모드 - 브라우저 직접 호출 차단됨]";
-    } else {
-        document.getElementById("set-openai-api-key").value = apiKeys.openai;
-        document.getElementById("set-elevenlabs-api-key").value = apiKeys.elevenLabs;
-    }
-    document.getElementById("set-image-model").value = p.imageModel || DEFAULT_PROFILE.imageModel;
-    document.getElementById("set-tts-provider").value = p.ttsProvider || DEFAULT_PROFILE.ttsProvider;
-    document.getElementById("set-tts-model").value = p.ttsModel || DEFAULT_PROFILE.ttsModel;
-    document.getElementById("set-tts-voice").value = p.ttsVoice || DEFAULT_PROFILE.ttsVoice;
-    document.getElementById("set-tts-instructions").value = p.ttsInstructions || "";
-    document.getElementById("set-elevenlabs-voice-id").value = p.elevenLabsVoiceId || "";
-    toggleTtsProviderFields();
     renderSettingsCategories();
     renderSettingsScriptTemplates();
 }
@@ -1473,35 +1374,14 @@ function saveProfile() {
     p.descTemplate = document.getElementById("set-desc-template").value;
     p.descCta = document.getElementById("set-desc-cta").value;
     p.promptTemplate = document.getElementById("set-prompt-template").value.trim() || DEFAULT_PROFILE.promptTemplate;
-    p.imageModel = document.getElementById("set-image-model").value.trim() || DEFAULT_PROFILE.imageModel;
-    p.ttsProvider = document.getElementById("set-tts-provider").value || DEFAULT_PROFILE.ttsProvider;
-    p.ttsModel = document.getElementById("set-tts-model").value.trim() || DEFAULT_PROFILE.ttsModel;
-    p.ttsVoice = document.getElementById("set-tts-voice").value || DEFAULT_PROFILE.ttsVoice;
-    p.ttsInstructions = document.getElementById("set-tts-instructions").value.trim();
-    p.elevenLabsVoiceId = document.getElementById("set-elevenlabs-voice-id").value.trim();
     p.defaultScriptTemplateId = document.getElementById("set-default-script-template").value;
     applyTemplateLabelInputs();
-
-    if (getRuntimeMode() !== "public") {
-        saveApiKeys({
-            openai: document.getElementById("set-openai-api-key").value,
-            elevenLabs: document.getElementById("set-elevenlabs-api-key").value
-        });
-    }
 
     saveData();
     applyProfileToUI();
     const activeScript = state.scripts.find(s => s.id === state.activeScriptId);
     if (activeScript) renderScriptSections(activeScript);
     showToast("채널 프로필 저장됨 ✓");
-}
-
-function toggleTtsProviderFields() {
-    const provider = document.getElementById("set-tts-provider").value;
-    const openAiFields = document.getElementById("set-openai-tts-fields");
-    const elevenLabsFields = document.getElementById("set-elevenlabs-tts-fields");
-    if (openAiFields) openAiFields.style.display = provider === "openai" ? "block" : "none";
-    if (elevenLabsFields) elevenLabsFields.style.display = provider === "elevenlabs" ? "block" : "none";
 }
 
 function openOnboardingModal() {
@@ -1521,7 +1401,6 @@ function chooseOnboarding(mode) {
 function resetAllData() {
     if (!confirm("아이디어, 대본, SEO, 채널 설정을 모두 삭제할까요? 이 작업은 되돌릴 수 없습니다.")) return;
     localStorage.removeItem("youtube_producer_hub_data");
-    localStorage.removeItem(API_KEYS_STORAGE_KEY);
     state = createEmptyState();
     normalizeStateData();
     saveData();
@@ -1597,119 +1476,6 @@ function escapeHTML(str) {
 /* ========================================================================== 
    Auto Production View (MVP) Logic
    ========================================================================== */
-class YphApiError extends Error {
-    constructor(category, message, status = 0) {
-        super(message);
-        this.name = "YphApiError";
-        this.category = category;
-        this.status = status;
-    }
-}
-
-function classifyApiResponseError(status, payload) {
-    const detail = payload && payload.error ? (payload.error.message || payload.error.code || "") : "";
-    const normalized = String(detail).toLowerCase();
-    if (status === 401 || status === 402) {
-        return new YphApiError("auth-billing", "인증 또는 결제 문제로 API 요청이 거절되었습니다. API 키와 결제 상태를 확인해 주세요.", status);
-    }
-    if (status === 403 || normalized.includes("verification") || normalized.includes("organization")) {
-        return new YphApiError("access-verification", "모델 접근 권한이 없거나 조직 인증이 필요합니다. OpenAI 프로젝트와 조직 인증 상태를 확인해 주세요.", status);
-    }
-    if (status === 429) {
-        return new YphApiError("rate-limit", "API 사용량 제한에 도달했습니다. 잠시 후 다시 시도하거나 사용 한도를 확인해 주세요.", status);
-    }
-    if (status === 400 && (normalized.includes("content policy") || normalized.includes("safety") || normalized.includes("moderation"))) {
-        return new YphApiError("content-policy", "콘텐츠 정책에 의해 요청이 거절되었습니다. 장면 설명을 수정한 뒤 다시 시도해 주세요.", status);
-    }
-    return new YphApiError("network-cors", `네트워크, CORS 또는 API 서버 오류가 발생했습니다.${detail ? ` (${detail})` : ""}`, status);
-}
-
-function apiErrorMessage(error) {
-    if (error && error.category === "public-mode-blocked") {
-        return "공개 배포에서는 브라우저 직접 API 호출이 비활성화되어 있습니다. 실제 AI 기능을 사용하려면 서버리스 프록시를 연결해야 합니다.";
-    }
-    if (error && error.category === "missing-key") return "API 키 없음 — 설정 > AI 서비스 연동에서 OpenAI API 키를 저장해 주세요.";
-    if (error && error.category === "auth-billing") return error.message;
-    if (error && error.category === "access-verification") return error.message;
-    if (error && error.category === "rate-limit") return error.message;
-    if (error && error.category === "network-cors") return error.message;
-    if (error && error.category === "content-policy") return error.message;
-    if ((error && error.category === "cancelled") || (error && error.name === "AbortError")) return "사용자 취소 — 요청이 취소되었습니다.";
-    return "네트워크, CORS 또는 API 응답을 확인할 수 없습니다. 로컬 HTTP 서버와 브라우저 콘솔을 확인해 주세요.";
-}
-
-async function generateSceneImageViaProxy({ prompt, size, model, signal }) {
-    if (getRuntimeMode() === "public") {
-        throw new YphApiError("public-mode-blocked", "Public mode direct API call blocked.");
-    }
-    // LOCAL TEST MODE: replace body with serverless proxy call for production
-    const apiKey = loadApiKeys().openai;
-    if (!apiKey) throw new YphApiError("missing-key", "OpenAI API key is missing.");
-    try {
-        const response = await fetch("https://api.openai.com/v1/images/generations", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ model, prompt, size, n: 1 }),
-            signal
-        });
-        const payload = await response.json().catch(() => ({}));
-        if (!response.ok) throw classifyApiResponseError(response.status, payload);
-        const base64 = payload && payload.data && payload.data[0] && payload.data[0].b64_json;
-        if (!base64) throw new YphApiError("network-cors", "API 응답에 b64_json 이미지 데이터가 없습니다.", response.status);
-        return `data:image/png;base64,${base64}`;
-    } catch (error) {
-        if (signal && signal.aborted) throw new YphApiError("cancelled", "Image request cancelled.");
-        if (error instanceof YphApiError) throw error;
-        throw new YphApiError("network-cors", "네트워크 또는 CORS 오류로 이미지 API에 연결하지 못했습니다.");
-    }
-}
-
-function generateNarrationViaElevenLabsStub() {
-    throw new YphApiError("access-verification", "ElevenLabs 연동은 1차 범위에서 준비되지 않았습니다. TTS 제공자를 OpenAI로 선택해 주세요.");
-}
-
-async function generateNarrationViaProxy({ text, model, voice, instructions, format, signal }) {
-    if (getRuntimeMode() === "public") {
-        throw new YphApiError("public-mode-blocked", "Public mode direct API call blocked.");
-    }
-    // LOCAL TEST MODE: replace body with serverless proxy call for production
-    if ((state.profile.ttsProvider || "openai") === "elevenlabs") {
-        return generateNarrationViaElevenLabsStub();
-    }
-    const apiKey = loadApiKeys().openai;
-    if (!apiKey) throw new YphApiError("missing-key", "OpenAI API key is missing.");
-    const body = {
-        model,
-        voice,
-        input: text,
-        response_format: format
-    };
-    if (instructions) body.instructions = instructions;
-    try {
-        const response = await fetch("https://api.openai.com/v1/audio/speech", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(body),
-            signal
-        });
-        if (!response.ok) {
-            const payload = await response.json().catch(() => ({}));
-            throw classifyApiResponseError(response.status, payload);
-        }
-        return await response.arrayBuffer();
-    } catch (error) {
-        if (signal && signal.aborted) throw new YphApiError("cancelled", "Narration request cancelled.");
-        if (error instanceof YphApiError) throw error;
-        throw new YphApiError("network-cors", "네트워크 또는 CORS 오류로 TTS API에 연결하지 못했습니다.");
-    }
-}
-
 let apCurrentTime = 0;
 let apIsPlaying = false;
 let apLastTickTime = 0;
@@ -1725,7 +1491,6 @@ let apRenderBgmSourceNode = null;
 let apAudioCtx = null;
 let apRenderSourceNodes = [];
 let apRenderAbortControllers = [];
-let apSceneImageControllers = new Map();
 let apRenderTimeline = null;
 let apLastRenderTimeline = null;
 let apRenderStartAt = 0;
@@ -1939,7 +1704,6 @@ function renderScenesList() {
 
     const totalScenes = project.scenes.length;
     project.scenes.forEach((scene, index) => {
-        const safeSceneId = escapeHTML(scene.id);
         const item = document.createElement("div");
         item.className = "card";
         item.style.cssText = "padding: 16px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px;";
@@ -1968,16 +1732,9 @@ function renderScenesList() {
                     <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" onclick="document.getElementById('ap-image-upload-${scene.id}').click()">
                         이미지 파일 업로드
                     </button>
-                    <div style="display: flex; gap: 6px;">
-                        <button id="ap-ai-image-btn-${safeSceneId}" class="btn btn-primary" style="padding: 6px 10px; font-size: 0.72rem; flex: 1; justify-content: center;" onclick="generateAiImageForScene('${safeSceneId}')">
-                            AI 이미지 생성
-                        </button>
-                        <button id="ap-ai-image-cancel-${safeSceneId}" class="btn btn-secondary" style="display: none; padding: 6px 10px; font-size: 0.72rem; color: var(--danger);" onclick="cancelSceneImageGeneration('${safeSceneId}')">취소</button>
-                    </div>
                     <div id="ap-image-name-${scene.id}" style="font-size: 0.7rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px;">
-                        ${escapeHTML(scene.imageName || "로컬 만화 패널 사용 중")}
+                        ${escapeHTML(scene.imageName || "기본 그래픽 패널 사용 중")}
                     </div>
-                    <div id="ap-ai-image-status-${safeSceneId}" class="ai-generation-status"></div>
                 </div>
             </div>
             
@@ -2011,12 +1768,6 @@ function renderScenesList() {
                         <option value="crop" ${scene.imageFit !== 'contain' ? 'selected' : ''}>꽉 차게 (Crop)</option>
                         <option value="contain" ${scene.imageFit === 'contain' ? 'selected' : ''}>맞춤 (Contain)</option>
                     </select>
-                </div>
-                <div class="form-group" style="margin-bottom: 0; display: flex; align-items: flex-end;">
-                    <button class="btn btn-secondary" style="padding: 8px 12px; font-size: 0.8rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="speakNarration('${scene.id}')">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-                        TTS 미리듣기
-                    </button>
                 </div>
             </div>
             
@@ -2191,93 +1942,6 @@ function resizeImageToDataURL(srcDataUrl) {
         img.onerror = () => reject(new Error("Image decode failed."));
         img.src = srcDataUrl;
     });
-}
-
-function buildSceneImagePrompt(project, scene) {
-    const content = [scene.caption || scene.narration || "", `Visual style: ${project.style}`].filter(Boolean).join(". ");
-    const template = state.profile.promptTemplate || DEFAULT_PROFILE.promptTemplate;
-    return template
-        .replace(/\{\{\s*title\s*\}\}/g, scene.title || project.title || "")
-        .replace(/\{\{\s*content\s*\}\}/g, content);
-}
-
-async function generateAiImageForScene(sceneId) {
-    const project = state.videoProjects.find(vp => vp.id === state.activeVideoProjectId);
-    const scene = project && project.scenes.find(item => item.id === sceneId);
-    if (!project || !scene) return;
-    if (getRuntimeMode() === "public") {
-        const error = new YphApiError("public-mode-blocked", "Public mode direct API call blocked.");
-        alert(apiErrorMessage(error));
-        return;
-    }
-    if (!loadApiKeys().openai) {
-        const error = new YphApiError("missing-key", "OpenAI API key is missing.");
-        alert(apiErrorMessage(error));
-        return;
-    }
-
-    const button = document.getElementById(`ap-ai-image-btn-${sceneId}`);
-    const cancelButton = document.getElementById(`ap-ai-image-cancel-${sceneId}`);
-    const status = document.getElementById(`ap-ai-image-status-${sceneId}`);
-    const controller = new AbortController();
-    apSceneImageControllers.set(sceneId, controller);
-    button.disabled = true;
-    button.innerText = "생성 중…";
-    cancelButton.style.display = "inline-flex";
-    status.className = "ai-generation-status";
-    status.innerText = "OpenAI가 장면 이미지를 생성하고 있습니다.";
-
-    try {
-        const size = project.aspectRatio === "9:16" ? "1024x1536" : "1536x1024";
-        const model = state.profile.imageModel || DEFAULT_PROFILE.imageModel;
-        const dataUrl = await generateSceneImageViaProxy({
-            prompt: buildSceneImagePrompt(project, scene),
-            size,
-            model,
-            signal: controller.signal
-        });
-        const resized = await resizeImageToDataURL(dataUrl);
-        scene.imageData = resized;
-        scene.imageName = `AI · ${model}`;
-        saveData();
-        renderScenesList();
-        apPlayerDrawCurrentFrame();
-        showToast("AI 이미지 생성 완료 ✓");
-    } catch (error) {
-        const message = apiErrorMessage(error);
-        status.className = `ai-generation-status${error.category === "cancelled" ? "" : " error"}`;
-        status.innerText = message;
-        showToast(message);
-    } finally {
-        apSceneImageControllers.delete(sceneId);
-        if (button && button.isConnected) {
-            button.disabled = false;
-            button.innerText = "AI 이미지 생성";
-        }
-        if (cancelButton && cancelButton.isConnected) cancelButton.style.display = "none";
-    }
-}
-
-function cancelSceneImageGeneration(sceneId) {
-    const controller = apSceneImageControllers.get(sceneId);
-    if (controller) controller.abort();
-}
-
-function speakNarration(sceneId) {
-    const project = state.videoProjects.find(vp => vp.id === state.activeVideoProjectId);
-    if (!project) return;
-    const scene = project.scenes.find(s => s.id === sceneId);
-    if (!scene || !scene.narration) return;
-    
-    // Cancel active synthesis speech
-    if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(scene.narration);
-        utterance.lang = "ko-KR";
-        window.speechSynthesis.speak(utterance);
-    } else {
-        alert("이 브라우저는 TTS(Speech Synthesis) 기능을 지원하지 않습니다.");
-    }
 }
 
 /* ==========================================================================
@@ -2755,61 +2419,19 @@ function decodeAudioBuffer(audioContext, arrayBuffer) {
     });
 }
 
-async function prefetchNarrationBuffers(project) {
-    const buffers = new Array(project.scenes.length).fill(null);
-    const hasNarration = project.scenes.some(scene => (scene.narration || "").trim());
-    if (!hasNarration) return buffers;
-
-    if (getRuntimeMode() === "public") {
-        document.getElementById("ap-render-status").innerText = "공개 배포 모드 — TTS 없이 BGM/무음 영상으로 계속합니다.";
-        showToast("공개 배포 모드 — TTS를 건너뛰고 렌더링합니다.");
-        return buffers;
-    }
-
-    if ((state.profile.ttsProvider || "openai") === "openai" && !loadApiKeys().openai) {
-        document.getElementById("ap-render-status").innerText = "API 키 없음 — TTS 없이 BGM/무음 영상으로 계속합니다.";
-        showToast("API 키 없음 — TTS를 건너뛰고 렌더링합니다.");
-        return buffers;
-    }
-
-    for (let index = 0; index < project.scenes.length; index++) {
-        if (!apIsRendering) throw new YphApiError("cancelled", "Rendering cancelled.");
-        const narration = (project.scenes[index].narration || "").trim();
-        if (!narration) continue;
-        document.getElementById("ap-render-status").innerText = `TTS 생성 중… (${index + 1}/${project.scenes.length})`;
-        const controller = new AbortController();
-        apRenderAbortControllers.push(controller);
-        const audioData = await generateNarrationViaProxy({
-            text: narration,
-            model: state.profile.ttsModel || DEFAULT_PROFILE.ttsModel,
-            voice: state.profile.ttsVoice || DEFAULT_PROFILE.ttsVoice,
-            instructions: state.profile.ttsInstructions || "",
-            format: "mp3",
-            signal: controller.signal
-        });
-        buffers[index] = await decodeAudioBuffer(apAudioCtx, audioData);
-    }
-    return buffers;
-}
-
-function buildEffectiveRenderTimeline(project, narrationBuffers) {
+// Build the render timeline from each scene's configured duration (no external audio).
+function buildEffectiveRenderTimeline(project) {
     let offset = 0;
-    const scenes = project.scenes.map((scene, index) => {
-        const configuredSceneDuration = Math.max(0.1, Number(scene.duration) || 5);
-        const ttsAudioBuffer = narrationBuffers[index] || null;
-        const effectiveDuration = Math.max(
-            configuredSceneDuration,
-            ttsAudioBuffer ? ttsAudioBuffer.duration + 0.3 : 0
-        );
+    const scenes = project.scenes.map((scene) => {
+        const duration = Math.max(0.1, Number(scene.duration) || 5);
         const timing = {
             sceneId: scene.id,
             offset,
-            end: offset + effectiveDuration,
-            configuredSceneDuration,
-            effectiveDuration,
-            audioBuffer: ttsAudioBuffer
+            end: offset + duration,
+            configuredSceneDuration: duration,
+            effectiveDuration: duration
         };
-        offset += effectiveDuration;
+        offset += duration;
         return timing;
     });
     return { projectId: project.id, totalDuration: offset, scenes };
@@ -2883,10 +2505,8 @@ async function startVideoRendering() {
         apAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
         await apAudioCtx.resume();
         const dest = apAudioCtx.createMediaStreamDestination();
-        const narrationBuffers = await prefetchNarrationBuffers(project);
-        if (!apIsRendering) return;
 
-        apRenderTimeline = buildEffectiveRenderTimeline(project, narrationBuffers);
+        apRenderTimeline = buildEffectiveRenderTimeline(project);
         apLastRenderTimeline = {
             projectId: project.id,
             totalDuration: apRenderTimeline.totalDuration,
@@ -2899,6 +2519,7 @@ async function startVideoRendering() {
             }))
         };
 
+        // Optional user BGM. Video renders fine (silent) when none is provided.
         let bgmBuffer = null;
         if (apBgmFile) {
             document.getElementById("ap-render-status").innerText = "배경음악 디코딩 중…";
@@ -2906,16 +2527,13 @@ async function startVideoRendering() {
                 bgmBuffer = await decodeAudioBuffer(apAudioCtx, await readFileAsArrayBuffer(apBgmFile));
             } catch (error) {
                 console.warn("BGM decode failed; rendering without BGM.", error);
-                document.getElementById("ap-render-status").innerText = "배경음악을 읽지 못해 TTS/무음으로 계속합니다.";
+                document.getElementById("ap-render-status").innerText = "배경음악을 읽지 못해 무음으로 계속합니다.";
             }
         }
 
         const bgmGain = apAudioCtx.createGain();
-        bgmGain.gain.value = 0.2;
+        bgmGain.gain.value = (typeof apBgmVolume === "number" ? apBgmVolume : 0.6);
         bgmGain.connect(dest);
-        const ttsGain = apAudioCtx.createGain();
-        ttsGain.gain.value = 1.0;
-        ttsGain.connect(dest);
 
         apRenderStartAt = apAudioCtx.currentTime + 0.15;
         if (bgmBuffer) {
@@ -2926,24 +2544,16 @@ async function startVideoRendering() {
             apRenderBgmSourceNode.start(apRenderStartAt);
             apRenderSourceNodes.push(apRenderBgmSourceNode);
         }
-        apRenderTimeline.scenes.forEach(timing => {
-            if (!timing.audioBuffer) return;
-            const source = apAudioCtx.createBufferSource();
-            source.buffer = timing.audioBuffer;
-            source.connect(ttsGain);
-            source.start(apRenderStartAt + timing.offset);
-            apRenderSourceNodes.push(source);
-        });
 
         const canvasStream = canvas.captureStream(30);
         apStartMediaRecorder(canvasStream, dest.stream, apRenderTimeline.totalDuration, apRenderStartAt);
     } catch (error) {
-        if (apRenderCancelled || (error && error.category === "cancelled")) return;
+        if (apRenderCancelled) return;
         console.error("Rendering setup failed", error);
         apIsRendering = false;
         document.getElementById("ap-render-overlay").style.display = "none";
         stopRenderResources({ abortRequests: true });
-        alert(apiErrorMessage(error));
+        alert("영상 생성에 실패했습니다. 장면 이미지와 브라우저 지원 여부를 확인해주세요.");
     }
 }
 
@@ -3120,7 +2730,7 @@ function cancelVideoRendering() {
     
     apRenderTimeline = null;
     apPlayerStop();
-    showToast(apiErrorMessage(new YphApiError("cancelled", "Rendering cancelled.")));
+    showToast("영상 제작을 취소했습니다.");
 }
 
 function handleBgmUpload(event) {

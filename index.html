@@ -571,62 +571,6 @@
                     이 앱을 당신의 채널에 맞게 커스터마이징합니다. 여기서 설정한 값은 아이디어 카테고리, SEO 키워드 분석, 낭독 시간 계산, 설명·프롬프트 템플릿에 실시간으로 반영됩니다.
                 </p>
 
-                <!-- AI Service Integration -->
-                <div class="card">
-                    <h3 class="card-title">AI 서비스 연동</h3>
-                    <div class="local-api-warning">⚠️ 로컬 테스트 모드 — API 키가 브라우저에 저장됩니다. 이 사이트를 공개 배포하면 키가 노출될 수 있습니다.</div>
-                    <p class="settings-help">현재는 개인 로컬 테스트를 위한 브라우저 직접 호출 구조입니다. 정식 배포에서는 두 프록시 함수의 본문을 서버리스 프록시 호출로 교체하고 키를 서버에 보관해야 합니다.</p>
-                    <div class="form-group">
-                        <label for="set-openai-api-key">OpenAI API Key (이미지 + TTS 공용)</label>
-                        <input type="password" id="set-openai-api-key" class="input-field" autocomplete="off" placeholder="sk-...">
-                    </div>
-                    <div class="form-group">
-                        <label for="set-elevenlabs-api-key">ElevenLabs API Key (선택, 1차 연동 미구현)</label>
-                        <input type="password" id="set-elevenlabs-api-key" class="input-field" autocomplete="off" placeholder="선택 사항">
-                    </div>
-                    <div class="form-group">
-                        <label for="set-image-model">이미지 모델</label>
-                        <input type="text" id="set-image-model" class="input-field" list="image-model-options" placeholder="gpt-image-2">
-                        <datalist id="image-model-options">
-                            <option value="gpt-image-2"></option><option value="gpt-image-1.5"></option>
-                            <option value="gpt-image-1"></option><option value="gpt-image-1-mini"></option>
-                        </datalist>
-                    </div>
-                    <div class="form-group">
-                        <label for="set-tts-provider">TTS 제공자</label>
-                        <select id="set-tts-provider" class="input-field" onchange="toggleTtsProviderFields()">
-                            <option value="openai">OpenAI (사용 가능)</option>
-                            <option value="elevenlabs">ElevenLabs (경계만 준비됨)</option>
-                        </select>
-                    </div>
-                    <div id="set-openai-tts-fields">
-                        <div class="form-group">
-                            <label for="set-tts-model">OpenAI TTS 모델</label>
-                            <input type="text" id="set-tts-model" class="input-field" placeholder="gpt-4o-mini-tts">
-                        </div>
-                        <div class="form-group">
-                            <label for="set-tts-voice">목소리</label>
-                            <select id="set-tts-voice" class="input-field">
-                                <option value="alloy">alloy</option><option value="ash">ash</option><option value="ballad">ballad</option>
-                                <option value="coral">coral</option><option value="echo">echo</option><option value="fable">fable</option>
-                                <option value="onyx">onyx</option><option value="nova">nova</option><option value="sage">sage</option>
-                                <option value="shimmer">shimmer</option><option value="verse">verse</option><option value="marin">marin</option>
-                                <option value="cedar">cedar</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="set-tts-instructions">말투 instructions</label>
-                            <textarea id="set-tts-instructions" class="input-field" style="min-height: 70px;" placeholder="예: 차분하고 신뢰감 있는 성우 톤"></textarea>
-                        </div>
-                    </div>
-                    <div id="set-elevenlabs-tts-fields" style="display: none;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label for="set-elevenlabs-voice-id">ElevenLabs Voice ID</label>
-                            <input type="text" id="set-elevenlabs-voice-id" class="input-field" placeholder="1차 범위에서는 저장만 지원">
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Channel Identity -->
                 <div class="card">
                     <h3 class="card-title">채널 정체성</h3>
