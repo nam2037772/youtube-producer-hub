@@ -663,6 +663,7 @@ function convertToScript(ideaId) {
         createdAt: new Date().toISOString()
     };
 
+    normalizeScript(newScript);
     state.scripts.push(newScript);
     
     // Remove from ideas board since it is now in active production
