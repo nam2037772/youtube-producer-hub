@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Creator Studio - 존재와 길</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <aside>
+        <div class="logo-container">
+            <div class="logo-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                </svg>
+            </div>
+            <span class="logo-text">Creator Hub</span>
+        </div>
+
+        <ul class="nav-links">
+            <li class="nav-item active" id="nav-dashboard">
+                <button onclick="switchView('dashboard')">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    대시보드
+                </button>
+            </li>
+            <li class="nav-item" id="nav-ideas">
+                <button onclick="switchView('ideas')">
+                    <svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                    아이디어 보드
+                </button>
+            </li>
+            <li class="nav-item" id="nav-editor">
+                <button onclick="switchView('editor')">
+                    <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    스크립트 에디터
+                </button>
+            </li>
+            <li class="nav-item" id="nav-seo">
+                <button onclick="switchView('seo')">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    SEO & 태그 플래너
+                </button>
+            </li>
+            <li class="nav-item" id="nav-auto-prod">
+                <button onclick="switchView('auto-prod')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7 16 12 23 17 23 7"></path><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                    자동 제작 (MVP)
+                </button>
+            </li>
+            <li class="nav-item" id="nav-settings">
+                <button onclick="switchView('settings')">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    채널 설정
+                </button>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="profile-img">길</div>
+            <div class="profile-info">
+                <span class="profile-name">존재와 길</span>
+                <span class="profile-role">크리에이터</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main>
+        <!-- Header -->
+        <header>
+            <div class="page-title-area">
+                <h1 id="page-title">대시보드</h1>
+            </div>
+            <div class="header-actions">
+                <input type="file" id="import-file-input" style="display: none;" accept=".json" onchange="importData(event)">
+                <button class="btn btn-secondary" onclick="document.getElementById('import-file-input').click()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 14 12 9 7 14"></polyline><line x1="12" y1="9" x2="12" y2="21"></line></svg>
+                    가져오기
+                </button>
+                <button class="btn btn-secondary" onclick="exportData()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    백업 내보내기
+                </button>
+                <button class="btn btn-primary" onclick="openNewIdeaModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    새 아이디어 추가
+                </button>
+            </div>
+        </header>
+
+        <!-- 1. Dashboard View -->
+        <section id="view-dashboard" class="page-container active">
+            <!-- Stat Cards -->
+            <div class="dashboard-grid">
+                <div class="card stat-card">
+                    <div class="stat-icon primary">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                    </div>
+                    <div class="stat-data">
+                        <span class="stat-value" id="stat-ideas-count">0</span>
+                        <span class="stat-label">기획된 아이디어</span>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-icon secondary">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    </div>
+                    <div class="stat-data">
+                        <span class="stat-value" id="stat-scripts-count">0</span>
+                        <span class="stat-label">작성 중인 대본</span>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-icon warning">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <div class="stat-data">
+                        <span class="stat-value" id="stat-duration-count">0:00</span>
+                        <span class="stat-label">예상 영상 분량</span>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-icon success">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    </div>
+                    <div class="stat-data">
+                        <span class="stat-value" id="stat-complete-count">0</span>
+                        <span class="stat-label">제작 완료 영상</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Details -->
+            <div class="dashboard-details-grid">
+                <!-- Left: Video Pipeline -->
+                <div class="card">
+                    <h2 class="card-title">진행 중인 제작 파이프라인</h2>
+                    <div class="pipeline-list" id="dashboard-pipeline">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <!-- Right: Channel Plan & Quick Checklist -->
+                <div class="card">
+                    <h2 class="card-title">오늘의 생산성 체크리스트</h2>
+                    <div class="checklist-container">
+                        <div class="checklist-item" data-idx="0" onclick="toggleQuickCheck(this)">
+                            <div class="checklist-checkbox">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <span class="checklist-label">무사시 오륜서 관련 대본 작성</span>
+                        </div>
+                        <div class="checklist-item" data-idx="1" onclick="toggleQuickCheck(this)">
+                            <div class="checklist-checkbox">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <span class="checklist-label">Midjourney 이미지 소스 15개 생성</span>
+                        </div>
+                        <div class="checklist-item" data-idx="2" onclick="toggleQuickCheck(this)">
+                            <div class="checklist-checkbox">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <span class="checklist-label">나레이션 오디오 녹음 및 노이즈 제거</span>
+                        </div>
+                        <div class="checklist-item" data-idx="3" onclick="toggleQuickCheck(this)">
+                            <div class="checklist-checkbox">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <span class="checklist-label">유튜브 제목 감정 키워드 튜닝</span>
+                        </div>
+                        <div class="checklist-item" data-idx="4" onclick="toggleQuickCheck(this)">
+                            <div class="checklist-checkbox">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <span class="checklist-label">쇼츠용 핵심 문구 3개 추출</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Ideas View -->
+        <section id="view-ideas" class="page-container">
+            <div class="idea-toolbar">
+                <div class="search-input-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="search-ideas" class="input-field" placeholder="아이디어 검색..." oninput="renderIdeas()">
+                </div>
+                <div class="filter-group">
+                    <select id="filter-category" class="select-field" onchange="renderIdeas()">
+                        <option value="all">모든 카테고리</option>
+                        <option value="Philosophy">철학</option>
+                        <option value="Stoicism">스토아 학파</option>
+                        <option value="History">역사적 인물</option>
+                        <option value="Self-Improvement">자기 계발</option>
+                        <option value="Mindset">마음가짐</option>
+                    </select>
+                    <select id="filter-difficulty" class="select-field" onchange="renderIdeas()">
+                        <option value="all">모든 난이도</option>
+                        <option value="Easy">쉬움</option>
+                        <option value="Medium">보통</option>
+                        <option value="Hard">어려움</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="ideas-grid" id="ideas-grid-container">
+                <!-- Filled by JS -->
+            </div>
+        </section>
+
+        <!-- 3. Editor View -->
+        <section id="view-editor" class="page-container">
+            <div class="script-layout">
+                <!-- Left Pane: Writing Section -->
+                <div class="script-editor-pane">
+                    <div style="display: flex; gap: 12px; margin-bottom: 16px; align-items: center;">
+                        <select id="active-script-select" class="select-field" style="flex-grow: 1;" onchange="loadActiveScript()">
+                            <!-- Filled dynamically -->
+                        </select>
+                        <button class="btn btn-secondary" onclick="createNewScript()" style="flex-shrink: 0; padding: 10px 14px;">+ 새 대본</button>
+                        <select id="script-template-select" class="select-field" onchange="changeScriptTemplate()" aria-label="대본 구성 프리셋">
+                            <!-- Filled dynamically -->
+                        </select>
+                        <select id="script-status-select" class="select-field" onchange="updateScriptStatus()">
+                            <option value="Drafting">초고 작성 중</option>
+                            <option value="Recording">나레이션 녹음 중</option>
+                            <option value="Editing">영상 편집 중</option>
+                            <option value="Completed">제작 완료</option>
+                        </select>
+                    </div>
+
+                    <div class="script-editor-scroll">
+                        <!-- Title Field -->
+                        <div class="section-editor-block">
+                            <div class="section-header">
+                                <span class="section-title" style="color: #ffffff;">비디오 제목</span>
+                            </div>
+                            <input type="text" id="script-title-input" class="input-field" style="background: transparent; border: none; font-size: 1.1rem; font-weight: bold; padding: 4px 0;" oninput="saveCurrentScriptData()">
+                        </div>
+
+                        <div id="script-sections-container" class="script-sections-container">
+                            <!-- Filled dynamically from the selected script template -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Pane: Side tools -->
+                <div class="script-sidebar-pane">
+                    <div class="script-sidebar-scroll">
+                        <!-- Metrics -->
+                        <div class="time-metric-box">
+                            <div class="metric-item">
+                                <div class="metric-val" id="script-total-words">0</div>
+                                <div class="metric-lbl">총 글자 수</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-val" id="script-est-time">0:00</div>
+                                <div class="metric-lbl">예상 낭독 시간</div>
+                            </div>
+                        </div>
+
+                        <!-- Midjourney Prompt Helper -->
+                        <div class="card prompt-box">
+                            <div class="prompt-header">
+                                <h3 class="section-title" style="color: var(--secondary);">AI 이미지 프롬프트 빌더</h3>
+                            </div>
+                            <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">
+                                선택한 섹션의 본문 내용을 분석하여 미드저니용 프롬프트를 생성하고 저장합니다.
+                            </p>
+                            <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                                <select id="prompt-section-select" class="select-field" style="flex-grow: 1; padding: 6px 12px; font-size: 0.8rem;">
+                                    <!-- Filled dynamically from the active script -->
+                                </select>
+                                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="generatePrompt()">프롬프트 생성</button>
+                            </div>
+                            <textarea id="ai-prompt-output" class="prompt-area" placeholder="여기에 프롬프트가 생성됩니다..."></textarea>
+                            <button class="btn btn-primary" style="width: 100%; justify-content: center; font-size: 0.85rem; margin-bottom: 16px;" onclick="saveGeneratedPrompt()">
+                                프롬프트 목록에 저장
+                            </button>
+                            
+                            <h4 class="section-title" style="font-size: 0.8rem; margin-bottom: 8px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 12px;">저장된 프롬프트 목록</h4>
+                            <div id="saved-prompts-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto;">
+                                <!-- Filled by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Checklists for Assets -->
+                        <div class="card">
+                            <h3 class="card-title" style="font-size: 0.95rem; margin-bottom: 12px;">이 영상의 제작 체크리스트</h3>
+                            <div class="checklist-container" id="script-asset-checklist">
+                                <div class="checklist-item" data-idx="0" onclick="toggleAssetCheck(this)">
+                                    <div class="checklist-checkbox">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    </div>
+                                    <span class="checklist-label">스크립트 최종 퇴고 완료</span>
+                                </div>
+                                <div class="checklist-item" data-idx="1" onclick="toggleAssetCheck(this)">
+                                    <div class="checklist-checkbox">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    </div>
+                                    <span class="checklist-label">나레이션 오디오 녹음</span>
+                                </div>
+                                <div class="checklist-item" data-idx="2" onclick="toggleAssetCheck(this)">
+                                    <div class="checklist-checkbox">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    </div>
+                                    <span class="checklist-label">배경 오디오 믹싱</span>
+                                </div>
+                                <div class="checklist-item" data-idx="3" onclick="toggleAssetCheck(this)">
+                                    <div class="checklist-checkbox">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    </div>
+                                    <span class="checklist-label">B-roll 시각 자료 수집 및 생성</span>
+                                </div>
+                                <div class="checklist-item" data-idx="4" onclick="toggleAssetCheck(this)">
+                                    <div class="checklist-checkbox">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    </div>
+                                    <span class="checklist-label">비디오 컷 편집 및 이펙트 작업</span>
+                                </div>
+                                <div class="checklist-item" data-idx="5" onclick="toggleAssetCheck(this)">
+                                    <div class="checklist-checkbox">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    </div>
+                                    <span class="checklist-label">자막 레이아웃 디자인 및 렌더링</span>
+                                </div>
+                                <div class="checklist-item" data-idx="6" onclick="toggleAssetCheck(this)">
+                                    <div class="checklist-checkbox">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    </div>
+                                    <span class="checklist-label">유튜브 썸네일 그래픽 디자인</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. SEO View -->
+        <section id="view-seo" class="page-container">
+            <div style="display: flex; gap: 12px; margin-bottom: 24px; align-items: center;">
+                <label for="seo-script-select" style="font-family: var(--font-outfit); font-size: 0.9rem; font-weight: 600; color: var(--text-muted); white-space: nowrap;">대상 영상 선택:</label>
+                <select id="seo-script-select" class="select-field" style="flex-grow: 1;" onchange="loadActiveSeoScript()">
+                    <!-- Filled dynamically -->
+                </select>
+            </div>
+            <div class="seo-layout">
+                <!-- Left: Edit details -->
+                <div class="seo-panel">
+                    <!-- Title Optimizer -->
+                    <div class="card">
+                        <div class="seo-card-header">
+                            <h3 class="card-title" style="margin-bottom: 0;">유튜브 비디오 제목 최적화</h3>
+                            <span class="char-counter" id="title-char-count">0 / 70 자</span>
+                        </div>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 14px;">
+                            유튜브에서 추천하는 가장 노출도가 높은 제목 길이는 50~70자 사이입니다. 감정을 자극하는 전력 키워드가 포함되었는지 체크합니다.
+                        </p>
+                        <input type="text" id="seo-title-input" class="input-field" placeholder="유튜브에 업로드할 제목을 입력하세요..." oninput="analyzeSeoTitle()" style="margin-bottom: 16px;">
+                        
+                        <div class="checklist-container" id="seo-title-analysis" style="gap: 12px;">
+                            <!-- Dynamic analysis checks -->
+                        </div>
+                    </div>
+
+                    <!-- Tags Maker -->
+                    <div class="card">
+                        <div class="seo-card-header">
+                            <h3 class="card-title" style="margin-bottom: 0;">태그 관리자</h3>
+                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="copyAllTags()">태그 모두 복사</button>
+                        </div>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 14px;">
+                            영상의 키워드 태그를 관리합니다. 쉼표(,)를 치거나 엔터를 누르면 추가됩니다.
+                        </p>
+                        <input type="text" id="seo-tag-input" class="input-field" placeholder="태그 입력 후 Enter 또는 쉼표 입력..." onkeydown="handleTagInput(event)" style="margin-bottom: 16px;">
+                        <div class="tags-container" id="seo-tags-list">
+                            <!-- Tag Chips will go here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: SEO Scores & Description templates -->
+                <div class="seo-panel">
+                    <!-- SEO Score -->
+                    <div class="card seo-score-box">
+                        <div class="score-circle" id="seo-score-value">0</div>
+                        <h4 style="font-family: var(--font-outfit); font-size: 1.1rem; margin-bottom: 6px;">SEO 최적화 지수</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);" id="seo-score-comment">제목 분석과 태그 개수를 계산하여 산출한 점수입니다.</p>
+                    </div>
+
+                    <!-- Description Generator -->
+                    <div class="card" style="display: flex; flex-direction: column; flex-grow: 1;">
+                        <div class="seo-card-header">
+                            <h3 class="card-title" style="margin-bottom: 0;">더보기 설명 템플릿</h3>
+                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="copyDescription()">본문 복사</button>
+                        </div>
+                        <textarea id="seo-desc-output" class="input-field" style="flex-grow: 1; min-height: 250px; font-family: monospace; font-size: 0.8rem; resize: none; margin-top: 12px;" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4.5 Auto Production View (MVP) -->
+        <section id="view-auto-prod" class="page-container">
+            <!-- Project Selection / Creation Row -->
+            <div style="display: flex; gap: 12px; margin-bottom: 24px; align-items: center;">
+                <label for="auto-project-select" style="font-family: var(--font-outfit); font-size: 0.9rem; font-weight: 600; color: var(--text-muted); white-space: nowrap;">프로젝트 선택:</label>
+                <select id="auto-project-select" class="select-field" style="flex-grow: 1;" onchange="loadActiveVideoProject()">
+                    <!-- Filled dynamically -->
+                </select>
+                <button class="btn btn-secondary" onclick="startNewVideoProject()" style="flex-shrink: 0;">+ 새 영상 제작</button>
+            </div>
+
+            <!-- Auto Production Layout -->
+            <div class="script-layout" id="auto-prod-layout">
+                <!-- Left Pane: Configuration or Scene Editor -->
+                <div class="script-editor-pane" id="auto-prod-left-pane">
+                    <!-- Config Panel (shown when no project or configuring) -->
+                    <div id="auto-prod-config-card" class="card" style="display: flex; flex-direction: column; gap: 20px; overflow-y: auto; height: 100%;">
+                        <h3 class="card-title" style="margin-bottom: 0;">새 자동제작 프로젝트</h3>
+                        <div class="form-group">
+                            <label for="ap-idea">영상 아이디어 한 줄</label>
+                            <textarea id="ap-idea" class="input-field" style="min-height: 80px;" placeholder="예: 퇴근 후 매일 10분씩 운동한 직장인의 변화"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="ap-title">영상 제목</label>
+                            <input type="text" id="ap-title" class="input-field" placeholder="예: 매일 10분의 기적">
+                        </div>
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div>
+                                <label for="ap-duration">영상 길이</label>
+                                <select id="ap-duration" class="input-field">
+                                    <option value="30">30초 (숏폼)</option>
+                                    <option value="60" selected>60초 (표준)</option>
+                                    <option value="180">3분 (롱폼)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="ap-aspect-ratio">화면 비율</label>
+                                <select id="ap-aspect-ratio" class="input-field">
+                                    <option value="16:9">16:9 (가로형)</option>
+                                    <option value="9:16">9:16 (세로형/쇼츠)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div>
+                                <label for="ap-style">비주얼 스타일</label>
+                                <select id="ap-style" class="input-field">
+                                    <option value="Comic" selected>만화 패널</option>
+                                    <option value="Illustration">감성 일러스트</option>
+                                    <option value="Documentary">다큐멘터리</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="ap-scene-count">장면 수</label>
+                                <select id="ap-scene-count" class="input-field">
+                                    <option value="auto" selected>자동 (분량 비례)</option>
+                                    <option value="3">3개</option>
+                                    <option value="4">4개</option>
+                                    <option value="5">5개</option>
+                                    <option value="6">6개</option>
+                                    <option value="7">7개</option>
+                                    <option value="8">8개</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" style="display: flex; gap: 12px; align-items: center; margin-bottom: 0;">
+                            <label class="checklist-item" style="cursor: pointer; display: flex; align-items: center;">
+                                <input type="checkbox" id="ap-captions-enabled" checked style="width: 18px; height: 18px; accent-color: var(--primary);">
+                                <span style="font-size: 0.9rem; color: var(--text-main); margin-left: 8px;">자막 오버레이 켜기</span>
+                            </label>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%; justify-content: center; font-size: 1rem; padding: 12px;" onclick="generateStoryboardFromConfig()">
+                            스토리보드 자동 생성 시작
+                        </button>
+                    </div>
+
+                    <!-- Storyboard & Scene Editor Panel (shown when project is selected) -->
+                    <div id="auto-prod-editor-panel" style="display: none; flex-direction: column; gap: 20px; height: 100%; overflow: hidden;">
+                        <h3 class="card-title" style="margin-bottom: 0;">스토리보드 상세 편집</h3>
+                        <div class="script-editor-scroll" style="flex-grow: 1; overflow-y: auto;">
+                            <!-- Scenes List -->
+                            <div id="ap-scenes-list" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                                <!-- Dynamically filled -->
+                            </div>
+                            <button class="btn btn-secondary" style="width: 100%; justify-content: center; border-style: dashed;" onclick="addNewSceneToActiveProject()">
+                                + 새 장면 추가
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Pane: Canvas Player & Render Controls -->
+                <div class="script-sidebar-pane" id="auto-prod-right-pane">
+                    <div class="script-sidebar-scroll" style="height: 100%; display: flex; flex-direction: column;">
+                        <!-- Canvas Container -->
+                        <div class="card" style="padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; flex-shrink: 0;">
+                            <div id="ap-canvas-wrapper" style="width: 100%; background: #000; border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; aspect-ratio: 16/9;">
+                                <canvas id="ap-player-canvas" style="max-width: 100%; max-height: 100%; object-fit: contain;"></canvas>
+                                <!-- Render overlay -->
+                                <div id="ap-render-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 24px; text-align: center; z-index: 10;">
+                                    <div class="score-circle" id="ap-render-progress-circle" style="border-top-color: var(--primary); margin-bottom: 0; width: 80px; height: 80px; font-size: 1.5rem;">0%</div>
+                                    <div style="font-weight: 600; font-size: 0.95rem; color: #fff;" id="ap-render-status">비디오 인코딩 중...</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);" id="ap-render-time-est">남은 시간 계산 중...</div>
+                                    <button class="btn btn-secondary" style="border-color: var(--danger); color: var(--danger); margin-top: 8px; font-size: 0.8rem; padding: 6px 12px;" onclick="cancelVideoRendering()">렌더링 취소</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Player Controls -->
+                            <div style="display: flex; gap: 12px; width: 100%; justify-content: center; align-items: center;">
+                                <button class="btn-icon" onclick="apPlayerRewind()" title="처음으로">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg>
+                                </button>
+                                <button class="btn-icon" id="ap-play-btn" onclick="apPlayerTogglePlay()" title="재생">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                </button>
+                                <button class="btn-icon" onclick="apPlayerStop()" title="정지">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect></svg>
+                                </button>
+                                <span id="ap-player-time" style="font-family: monospace; font-size: 0.85rem; color: var(--text-muted); margin-left: 12px;">0.0s / 0.0s</span>
+                            </div>
+                        </div>
+
+                        <!-- Audio & Rendering Card -->
+                        <div class="card" style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px;">
+                            <h3 class="card-title" style="font-size: 0.95rem; margin-bottom: 0;">오디오 및 비디오 내보내기</h3>
+                            
+                            <div class="form-group">
+                                <label for="ap-bgm-file">배경음악 파일 업로드 (MP3 / WAV)</label>
+                                <input type="file" id="ap-bgm-file" class="input-field" accept="audio/*" onchange="handleBgmUpload(event)" style="padding: 6px 12px;">
+                                <div id="ap-bgm-status" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">배경음악 없음 (기본 무음 렌더링)</div>
+                            </div>
+                            
+                            <div style="display: flex; gap: 12px; margin-top: 8px;">
+                                <button id="ap-render-btn" class="btn btn-primary" style="flex-grow: 1; justify-content: center; font-size: 0.9rem;" onclick="startVideoRendering()">
+                                    WebM 영상 렌더링 및 다운로드
+                                </button>
+                                <button class="btn btn-secondary" onclick="deleteActiveVideoProject()" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.2);" title="프로젝트 삭제">
+                                    삭제
+                                </button>
+                            </div>
+
+                            <!-- Rendered video result -->
+                            <div id="ap-result-container" style="display: none; flex-direction: column; gap: 12px; margin-top: 8px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                                <span style="font-size: 0.85rem; font-weight: 600; color: #10b981;">인코딩 성공!</span>
+                                <video id="ap-rendered-video" controls style="width: 100%; border-radius: 8px; background: #000; border: 1px solid var(--border-color);"></video>
+                                <a id="ap-download-link" class="btn btn-secondary" style="justify-content: center; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); color: #a7f3d0;" download>
+                                    영상 파일 다운로드
+                                </a>
+                                <button id="ap-srt-download-btn" class="btn btn-secondary" style="justify-content: center;" onclick="downloadSrtForActiveProject()">
+                                    자막(.srt) 다운로드
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Settings View -->
+        <section id="view-settings" class="page-container">
+            <div style="max-width: 820px; display: flex; flex-direction: column; gap: 24px;">
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+                    이 앱을 당신의 채널에 맞게 커스터마이징합니다. 여기서 설정한 값은 아이디어 카테고리, SEO 키워드 분석, 낭독 시간 계산, 설명·프롬프트 템플릿에 실시간으로 반영됩니다.
+                </p>
+
+                <!-- AI Service Integration -->
+                <div class="card">
+                    <h3 class="card-title">AI 서비스 연동</h3>
+                    <div class="local-api-warning">⚠️ 로컬 테스트 모드 — API 키가 브라우저에 저장됩니다. 이 사이트를 공개 배포하면 키가 노출될 수 있습니다.</div>
+                    <p class="settings-help">현재는 개인 로컬 테스트를 위한 브라우저 직접 호출 구조입니다. 정식 배포에서는 두 프록시 함수의 본문을 서버리스 프록시 호출로 교체하고 키를 서버에 보관해야 합니다.</p>
+                    <div class="form-group">
+                        <label for="set-openai-api-key">OpenAI API Key (이미지 + TTS 공용)</label>
+                        <input type="password" id="set-openai-api-key" class="input-field" autocomplete="off" placeholder="sk-...">
+                    </div>
+                    <div class="form-group">
+                        <label for="set-elevenlabs-api-key">ElevenLabs API Key (선택, 1차 연동 미구현)</label>
+                        <input type="password" id="set-elevenlabs-api-key" class="input-field" autocomplete="off" placeholder="선택 사항">
+                    </div>
+                    <div class="form-group">
+                        <label for="set-image-model">이미지 모델</label>
+                        <input type="text" id="set-image-model" class="input-field" list="image-model-options" placeholder="gpt-image-2">
+                        <datalist id="image-model-options">
+                            <option value="gpt-image-2"></option><option value="gpt-image-1.5"></option>
+                            <option value="gpt-image-1"></option><option value="gpt-image-1-mini"></option>
+                        </datalist>
+                    </div>
+                    <div class="form-group">
+                        <label for="set-tts-provider">TTS 제공자</label>
+                        <select id="set-tts-provider" class="input-field" onchange="toggleTtsProviderFields()">
+                            <option value="openai">OpenAI (사용 가능)</option>
+                            <option value="elevenlabs">ElevenLabs (경계만 준비됨)</option>
+                        </select>
+                    </div>
+                    <div id="set-openai-tts-fields">
+                        <div class="form-group">
+                            <label for="set-tts-model">OpenAI TTS 모델</label>
+                            <input type="text" id="set-tts-model" class="input-field" placeholder="gpt-4o-mini-tts">
+                        </div>
+                        <div class="form-group">
+                            <label for="set-tts-voice">목소리</label>
+                            <select id="set-tts-voice" class="input-field">
+                                <option value="alloy">alloy</option><option value="ash">ash</option><option value="ballad">ballad</option>
+                                <option value="coral">coral</option><option value="echo">echo</option><option value="fable">fable</option>
+                                <option value="onyx">onyx</option><option value="nova">nova</option><option value="sage">sage</option>
+                                <option value="shimmer">shimmer</option><option value="verse">verse</option><option value="marin">marin</option>
+                                <option value="cedar">cedar</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="set-tts-instructions">말투 instructions</label>
+                            <textarea id="set-tts-instructions" class="input-field" style="min-height: 70px;" placeholder="예: 차분하고 신뢰감 있는 성우 톤"></textarea>
+                        </div>
+                    </div>
+                    <div id="set-elevenlabs-tts-fields" style="display: none;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="set-elevenlabs-voice-id">ElevenLabs Voice ID</label>
+                            <input type="text" id="set-elevenlabs-voice-id" class="input-field" placeholder="1차 범위에서는 저장만 지원">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Channel Identity -->
+                <div class="card">
+                    <h3 class="card-title">채널 정체성</h3>
+                    <div class="form-group">
+                        <label for="set-channel-name">채널명</label>
+                        <input type="text" id="set-channel-name" class="input-field" style="padding-left: 16px;" placeholder="예: 존재와 길">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="set-brand-keywords">브랜드 키워드 (쉼표로 구분)</label>
+                        <input type="text" id="set-brand-keywords" class="input-field" style="padding-left: 16px;" placeholder="예: 존재와 길, 미야모토 무사시">
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">SEO 제목 분석에서 "브랜드 키워드 포함" 체크에 사용됩니다.</p>
+                    </div>
+                </div>
+
+                <!-- Content Categories -->
+                <div class="card">
+                    <h3 class="card-title">콘텐츠 카테고리</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 14px;">아이디어 보드의 분류 목록입니다. 아래에서 추가/삭제하면 아이디어 필터와 등록 모달에 즉시 반영됩니다.</p>
+                    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                        <input type="text" id="set-category-input" class="input-field" style="padding-left: 16px; flex-grow: 1;" placeholder="새 카테고리 입력 후 Enter 또는 추가 버튼" onkeydown="handleCategoryInput(event)">
+                        <button class="btn btn-secondary" style="flex-shrink: 0;" onclick="addSettingsCategory()">추가</button>
+                    </div>
+                    <div class="tags-container" id="set-categories-list">
+                        <!-- Category chips -->
+                    </div>
+                </div>
+
+                <!-- SEO Tuning -->
+                <div class="card">
+                    <h3 class="card-title">SEO & 낭독 설정</h3>
+                    <div class="form-group">
+                        <label for="set-power-words">파워워드 (쉼표로 구분)</label>
+                        <textarea id="set-power-words" class="input-field" style="padding-left: 16px; min-height: 80px;" placeholder="예: 목숨, 위협, 비밀, 규율, 성공, 인생"></textarea>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">제목에 이 단어가 포함되면 SEO 점수가 오릅니다. 채널 성격에 맞는 후킹 키워드를 넣으세요.</p>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="set-speech-rate">낭독 속도 (분당 글자 수)</label>
+                        <input type="number" id="set-speech-rate" class="input-field" style="padding-left: 16px;" min="50" max="1000" placeholder="300">
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">한국어 기준 약 300자/분. 예상 영상 분량과 설명 타임라인 계산에 사용됩니다.</p>
+                    </div>
+                </div>
+
+                <!-- Templates -->
+                <div class="card">
+                    <h3 class="card-title">대본 구성 프리셋</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 14px;">새 대본에 적용할 기본 구성을 고르고, 각 섹션의 표시 라벨을 채널에 맞게 편집하세요.</p>
+                    <div class="form-group">
+                        <label for="set-default-script-template">기본 프리셋</label>
+                        <select id="set-default-script-template" class="input-field" onchange="handleSettingsTemplateChange()"></select>
+                    </div>
+                    <div id="set-template-sections-list" class="template-sections-list"></div>
+                </div>
+
+                <!-- Templates -->
+                <div class="card">
+                    <h3 class="card-title">설명 & 프롬프트 템플릿</h3>
+                    <div class="form-group">
+                        <label for="set-desc-template">설명 본문 문구</label>
+                        <textarea id="set-desc-template" class="input-field" style="padding-left: 16px; min-height: 90px;" placeholder="영상 설명 상단에 들어갈 소개 문구"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="set-desc-cta">설명 마무리(CTA) 문구</label>
+                        <textarea id="set-desc-cta" class="input-field" style="padding-left: 16px; min-height: 60px;" placeholder="예: 도움이 되셨다면 구독과 좋아요 부탁드립니다."></textarea>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="set-prompt-template">미드저니 프롬프트 템플릿</label>
+                        <textarea id="set-prompt-template" class="input-field" style="padding-left: 16px; min-height: 100px; font-family: monospace; font-size: 0.8rem;" placeholder="{{title}} 과 {{content}} 토큰을 사용하세요"></textarea>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;"><code>{{title}}</code> = 대본 제목, <code>{{content}}</code> = 선택한 섹션 본문 발췌로 치환됩니다.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end;">
+                    <button class="btn btn-primary" onclick="saveProfile()">채널 프로필 저장</button>
+                </div>
+
+                <div class="card danger-zone">
+                    <h3 class="card-title">데이터 초기화</h3>
+                    <p>현재 브라우저에 저장된 아이디어, 대본, SEO 데이터와 채널 설정을 모두 삭제합니다.</p>
+                    <button class="btn btn-danger" onclick="resetAllData()">모든 데이터 초기화</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <!-- New Idea Modal -->
+    <div class="modal-overlay" id="new-idea-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>새로운 기획 아이디어 추가</h2>
+                <button class="btn-icon" onclick="closeNewIdeaModal()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <form id="new-idea-form">
+                <div class="form-group">
+                    <label for="idea-title">영상 주제/가제</label>
+                    <input type="text" id="idea-title" class="input-field" required placeholder="예: 미야모토 무사시가 가르쳐주는 흔들리지 않는 규율">
+                </div>
+                <div class="form-group">
+                    <label for="idea-desc">핵심 메시지 및 구성</label>
+                    <textarea id="idea-desc" class="input-field" required placeholder="어떤 메시지를 다루고 기획할 것인지 간단히 작성해주세요..."></textarea>
+                </div>
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div>
+                        <label for="idea-category">카테고리</label>
+                        <select id="idea-category" class="input-field">
+                            <option value="Philosophy">철학</option>
+                            <option value="Stoicism">스토아 학파</option>
+                            <option value="History">역사적 인물</option>
+                            <option value="Self-Improvement">자기 계발</option>
+                            <option value="Mindset">마음가짐</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="idea-difficulty">작성 난이도</label>
+                        <select id="idea-difficulty" class="input-field">
+                            <option value="Easy">쉬움 (가벼운 주제)</option>
+                            <option value="Medium" selected>보통 (일반적인 주제)</option>
+                            <option value="Hard">어려움 (깊이 있는 연구 필요)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeNewIdeaModal()">취소</button>
+                    <button type="submit" class="btn btn-primary">아이디어 저장</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- First-run Onboarding Modal -->
+    <div class="modal-overlay" id="onboarding-modal">
+        <div class="modal-content onboarding-content">
+            <div class="modal-header">
+                <div>
+                    <p class="eyebrow">YOUTUBE PRODUCER HUB</p>
+                    <h2>어떻게 시작할까요?</h2>
+                </div>
+            </div>
+            <p class="onboarding-copy">샘플 제작 흐름을 둘러보거나, 빈 작업 공간에서 내 채널 설정부터 시작할 수 있습니다.</p>
+            <div class="onboarding-options">
+                <button class="onboarding-option" onclick="chooseOnboarding('sample')">
+                    <strong>샘플 데이터로 시작</strong>
+                    <span>아이디어와 롱폼 대본 예시로 기능을 바로 살펴봅니다.</span>
+                </button>
+                <button class="onboarding-option primary-option" onclick="chooseOnboarding('empty')">
+                    <strong>빈 상태로 시작</strong>
+                    <span>내 채널명, 카테고리, 대본 구성을 먼저 설정합니다.</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script and State Code -->
+        <!-- Toast Notification -->
+        <div id="toast-notification" style="position: fixed; bottom: 24px; right: 24px; background: rgba(139, 92, 246, 0.95); border: 1px solid var(--primary); color: white; padding: 12px 24px; border-radius: 10px; font-family: var(--font-outfit); font-weight: 600; font-size: 0.9rem; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); opacity: 0; pointer-events: none; transform: translateY(10px); transition: var(--transition-smooth); z-index: 999;">
+            저장됨 ✓
+        </div>
+
+    <!-- Script and State Code -->
+    <script src="app.js"></script>
+    </body>
+    </html>
